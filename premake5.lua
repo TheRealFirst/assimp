@@ -1,15 +1,23 @@
 project "assimp"
-  kind "StaticLib"
-  language "C++"
-  cppdialect "C++17"
-  staticruntime "on"
+    kind "StaticLib"
+    language "C++"
+    cppdialect "C++17"
+    staticruntime "on"
 
-  targetdir ("bin/" .. outputdir .. "/%{prj.name}")
-  objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
+    targetdir ("bin/" .. outputdir .. "/%{prj.name}")
+    objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 
-  defines {
+    defines {
+      "BUILD_SHARED_LIBS=OFF",
       -- "SWIG",
       "ASSIMP_BUILD_NO_OWN_ZLIB",
+      "ASSIMP_BUILD_NO_USD_IMPORTER",
+        "_CRT_SECURE_NO_WARNINGS",
+        "ASSIMP_BUILD_NO_EXPORT",
+        "ASSIMP_BUILD_NO_TINYUSDZ_IMPORTER",
+        "ASSIMP_BUILD_BOOST_WORKAROUND",
+        "ASSIMP_BUILD_NO_IFC_IMPORTER",
+        "ASSIMP_BUILD_DLL_EXPORT",
 
       "ASSIMP_BUILD_NO_X_IMPORTER",
       "ASSIMP_BUILD_NO_3DS_IMPORTER",
@@ -69,7 +77,7 @@ project "assimp"
       -- "ASSIMP_BUILD_NO_TRIANGULATE_PROCESS",
       "ASSIMP_BUILD_NO_GENFACENORMALS_PROCESS",
       -- "ASSIMP_BUILD_NO_GENVERTEXNORMALS_PROCESS",
-      "ASSIMP_BUILD_NO_REMOVEVC_PROCESS",
+      -- "ASSIMP_BUILD_NO_REMOVEVC_PROCESS",
       "ASSIMP_BUILD_NO_SPLITLARGEMESHES_PROCESS",
       "ASSIMP_BUILD_NO_PRETRANSFORMVERTICES_PROCESS",
       "ASSIMP_BUILD_NO_LIMITBONEWEIGHTS_PROCESS",
@@ -89,66 +97,88 @@ project "assimp"
       "ASSIMP_BUILD_NO_DEBONE_PROCESS",
       "ASSIMP_BUILD_NO_EMBEDTEXTURES_PROCESS",
       "ASSIMP_BUILD_NO_GLOBALSCALE_PROCESS",
-  }
+    }
 
-  files {
-      "include/**",
-      "code/Assimp.cpp",
-      "code/BaseImporter.cpp",
-      "code/ColladaLoader.cpp",
-      "code/ColladaParser.cpp",
-      "code/CreateAnimMesh.cpp",
-      "code/PlyParser.cpp",
-      "code/PlyLoader.cpp",
-      "code/BaseProcess.cpp",
-      "code/EmbedTexturesProcess.cpp",
-      "code/ConvertToLHProcess.cpp",
-      "code/DefaultIOStream.cpp",
-      "code/DefaultIOSystem.cpp",
-      "code/DefaultLogger.cpp",
-      "code/GenVertexNormalsProcess.cpp",
-      "code/Importer.cpp",
-      "code/ImporterRegistry.cpp",
-      "code/MaterialSystem.cpp",
-      "code/PostStepRegistry.cpp",
-      "code/ProcessHelper.cpp",
-      "code/scene.cpp",
-      "code/ScenePreprocessor.cpp",
-      "code/ScaleProcess.cpp",
-      "code/SGSpatialSort.cpp",
-      "code/SkeletonMeshBuilder.cpp",
-      "code/SpatialSort.cpp",
-      "code/TriangulateProcess.cpp",
-      "code/ValidateDataStructure.cpp",
-      "code/Version.cpp",
-      "code/VertexTriangleAdjacency.cpp",
-      "code/ObjFileImporter.cpp",
-      "code/ObjFileMtlImporter.cpp",
-      "code/ObjFileParser.cpp",
-      "code/glTFImporter.cpp",
-      "code/glTF2Importer.cpp",
-      "code/MakeVerboseFormat.cpp",
-      "code/CalcTangentsProcess.cpp",
-      "code/ScaleProcess.cpp",
-      "code/EmbedTexturesProcess.cpp",
-      "contrib/irrXML/*",
-  }
+    files {
+        -- Core files
+        "%{prj.location}/code/Common/**.cpp",
+        "%{prj.location}/code/Common/**.h",
+        "%{prj.location}/code/PostProcessing/**.cpp",
+        "%{prj.location}/code/PostProcessing/**.h",
+        "%{prj.location}/code/Material/**.cpp",
+        "%{prj.location}/code/Material/**.h",
 
-  includedirs {
-      "include",
-      "contrib/irrXML",
-      "contrib/zlib",
-      "contrib/rapidjson/include",
-  }
+        -- IO System
+        "%{prj.location}/code/Common/IOSystem.cpp",
+        "%{prj.location}/code/Common/DefaultIOStream.cpp",
+        "%{prj.location}/code/Common/DefaultIOSystem.cpp",
+        "%{prj.location}/include/assimp/IOSystem.hpp",
+        "%{prj.location}/include/assimp/DefaultIOStream.h",
+        "%{prj.location}/include/assimp/DefaultIOSystem.h",
+        "%{prj.location}/code/CApi/CInterfaceIOWrapper.cpp",
+        
+        -- Asset importers
+        "%{prj.location}/code/AssetLib/Obj/**.cpp",
+        "%{prj.location}/code/AssetLib/Obj/**.h",
+        "%{prj.location}/code/AssetLib/glTF/**.cpp",
+        "%{prj.location}/code/AssetLib/glTF/**.h",
+        "%{prj.location}/code/AssetLib/glTF2/**.cpp",
+        "%{prj.location}/code/AssetLib/glTF2/**.h",
+        "%{prj.location}/code/AssetLib/M3D/**.cpp",
+        "%{prj.location}/code/AssetLib/M3D/**.h",
+        "%{prj.location}/code/AssetLib/IQM/**.cpp",
+        "%{prj.location}/code/AssetLib/IQM/**.h",
+        
+        -- glTF Common
+        "%{prj.location}/code/AssetLib/glTFCommon/glTFCommon.cpp",
+        "%{prj.location}/code/AssetLib/glTFCommon/glTFCommon.h",
+        
+        -- Dependencies
+        "%{prj.location}/contrib/irrXML/**.cpp",
+        "%{prj.location}/contrib/irrXML/**.h",
+        "%{prj.location}/contrib/zlib/*.c",
+        "%{prj.location}/contrib/zlib/*.h",
+        "%{prj.location}/contrib/unzip/*.c",
+        "%{prj.location}/contrib/unzip/*.h",
+        "%{prj.location}/contrib/rapidjson/include/**.h",
+        
+        -- Include headers
+        "%{prj.location}/include/**.h",
+        "%{prj.location}/include/**.hpp",
+        "%{prj.location}/include/**.inl",
+        
+        -- Base directory files
+        "%{prj.location}/revision.h"
+    }
 
+    includedirs {
+        "%{prj.location}/include",
+        "%{prj.location}/code",
+        "%{prj.location}/contrib",
+        "%{prj.location}/contrib/irrXML",
+        "%{prj.location}/contrib/zlib",
+        "%{prj.location}/contrib/rapidjson/include",
+        "%{prj.location}/contrib/unzip",
+        "%{prj.location}/contrib/utf8cpp/source",
+        "%{prj.location}/.", 
+    }
 
-   filter "system:windows"
-      systemversion "latest"
+    filter "system:windows"
+        systemversion "latest"
+        
+        prebuildcommands {
+            'if not exist "%{prj.location}\\include\\assimp\\revision.h" copy /Y "%{prj.location}\\revision.h.template" "%{prj.location}\\include\\assimp\\revision.h"',
+            'if not exist "%{prj.location}\\contrib\\zlib\\zconf.h" copy /Y "%{prj.location}\\contrib\\zlib\\zconf.h.in" "%{prj.location}\\contrib\\zlib\\zconf.h"'
+        }
 
-   filter  "configurations:Debug"
-       runtime "Debug"
-       symbols "on"
+    filter "configurations:Debug"
+        runtime "Debug"
+        symbols "on"
 
-   filter  "configurations:Release"
-       runtime "Release"
-       optimize "on"
+    filter "configurations:Release"
+        runtime "Release"
+        optimize "on"
+
+    filter "configurations:Dist"
+        runtime "Release"
+        optimize "on"

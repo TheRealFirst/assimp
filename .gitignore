@@ -4,6 +4,9 @@ build
 *.kdev4*
 .DS_Store
 
+bin-int/
+bin/
+
 # build artefacts
 *.o
 *.a
